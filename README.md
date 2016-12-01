@@ -1,3 +1,3 @@
 # hydra
 
-SOA framework by python
+A Python thrift server written in C.
