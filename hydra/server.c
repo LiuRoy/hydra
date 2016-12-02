@@ -15,17 +15,17 @@
 #include "common.h"
 #include "server.h"
 
-#define READ_BUFFER_SIZE 64*1024
+#define READ_BUFFER_SIZE 4*1024
 #define Py_XCLEAR(obj) do { if(obj) { Py_DECREF(obj); obj = NULL; } } while(0)
 #define GIL_LOCK(n) PyGILState_STATE _gilstate_##n = PyGILState_Ensure()
 #define GIL_UNLOCK(n) PyGILState_Release(_gilstate_##n)
 
-static const char* http_error_messages[4] = {
-  NULL, /* Error codes start at 1 because 0 means "no error" */
-  "HTTP/1.1 400 Bad Request\r\n\r\n",
-  "HTTP/1.1 406 Length Required\r\n\r\n",
-  "HTTP/1.1 500 Internal Server Error\r\n\r\n"
-};
+//static const char* http_error_messages[4] = {
+//  NULL, /* Error codes start at 1 because 0 means "no error" */
+//  "HTTP/1.1 400 Bad Request\r\n\r\n",
+//  "HTTP/1.1 406 Length Required\r\n\r\n",
+//  "HTTP/1.1 500 Internal Server Error\r\n\r\n"
+//};
 
 enum _rw_state {
   not_yet_done = 1,
