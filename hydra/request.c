@@ -31,13 +31,6 @@ Request* Request_new(ServerInfo* server_info, int client_fd, const char* client_
   return request;
 }
 
-void Request_reset(Request* request)
-{
-  memset(&request->state, 0, sizeof(Request) - (size_t)&((Request*)NULL)->state);
-  request->state.response_length_unknown = true;
-  request->parser.body = (string){NULL, 0};
-}
-
 void Request_free(Request* request)
 {
   Request_clean(request);
@@ -45,29 +38,9 @@ void Request_free(Request* request)
   free(request);
 }
 
-void Request_clean(Request* request)
-{
-  if(request->iterable) {
-    /* Call 'iterable.close()' if available */
-    PyObject* close_method = PyObject_GetAttr(request->iterable, _close);
-    if(close_method == NULL) {
-      if(PyErr_ExceptionMatches(PyExc_AttributeError))
-        PyErr_Clear();
-    } else {
-      PyObject_CallObject(close_method, NULL);
-      Py_DECREF(close_method);
-    }
-    if(PyErr_Occurred()) PyErr_Print();
-    Py_DECREF(request->iterable);
-  }
-  Py_XDECREF(request->iterator);
-  Py_XDECREF(request->headers);
-  Py_XDECREF(request->status);
-}
-
 /* Parse stuff */
 
-void Request_parse(Request* request, const char* data, const size_t data_len)
+void Request_decode(Request* request, const char* data, const size_t data_len)
 {
   assert(data_len);
   size_t nparsed = http_parser_execute((http_parser*)&request->parser,

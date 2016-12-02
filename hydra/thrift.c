@@ -1,6 +1,5 @@
 #include "common.h"
-#include "filewrapper.h"
-#include "wsgi.h"
+#include "thrift.h"
 
 static size_t wsgi_getheaders(Request*, PyObject* buf);
 
@@ -10,7 +9,7 @@ typedef struct {
 } StartResponse;
 
 bool
-wsgi_call_application(Request* request)
+thrift_call_application(Request* request)
 {
   StartResponse* start_response = PyObject_NEW(StartResponse, &StartResponse_Type);
   start_response->request = request;
@@ -245,7 +244,7 @@ wsgi_getheaders(Request* request, PyObject* buf)
 }
 
 inline PyObject*
-wsgi_iterable_get_next_chunk(Request* request)
+thrift_iterable_get_next_chunk(Request* request)
 {
   /* Get the next item out of ``request->iterable``, skipping empty ones. */
   PyObject* next;
