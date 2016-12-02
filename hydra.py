@@ -3,10 +3,7 @@
 
 import os
 import socket
-from _hydra import (
-    run_server,
-    ThriftApplication
-)
+import _hydra
 
 LISTEN_BACKLOG = 1024
 
@@ -16,12 +13,14 @@ class ThriftServer(object):
     """thrift server
 
     Attributes:
-        app (ThriftApplication): thrift应用
+        service: thrift service
+        handler: thrift handler
         sock (socket)
     """
     def __init__(self, service, handler):
         self.sock = None
-        self.app = ThriftApplication(service, handler)
+        self.service = service
+        self.handler = handler
 
     def bind_and_listen(self, host, port, reuse_port):
         if host.startswith("unix:@"):
@@ -45,7 +44,7 @@ class ThriftServer(object):
 
     def serve(self):
         try:
-            server_run(self.sock, self.app)
+            server_run(self.sock, self.service, self.handler)
         finally:
             if self.sock.family == socket.AF_UNIX:
                 filename = self.sock.getsockname()
