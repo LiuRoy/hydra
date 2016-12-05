@@ -14,6 +14,7 @@
 
 #include "common.h"
 #include "server.h"
+#include "thrift.h"
 
 #define BUFFER_SIZE 4*1024
 #define GIL_LOCK(n) PyGILState_STATE _gilstate_##n = PyGILState_Ensure()
