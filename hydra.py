@@ -1,9 +1,11 @@
 # -*- coding=utf8 -*-
 """thrift server"""
 
+
 import os
 import socket
 import _hydra
+import _parser
 
 LISTEN_BACKLOG = 1024
 
@@ -44,7 +46,7 @@ class ThriftServer(object):
 
     def serve(self):
         try:
-            server_run(self.sock, self.service, self.handler)
+            _hydra.server_run(self.sock, self.service, self.handler)
         finally:
             if self.sock.family == socket.AF_UNIX:
                 filename = self.sock.getsockname()
@@ -53,7 +55,7 @@ class ThriftServer(object):
             self.sock.close()
 
 
-def maker_server(service, handler, host, port, reuse_port=False):
+def make_server(service, handler, host, port, reuse_port=False):
     """生成thrift server
 
     Args:

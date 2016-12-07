@@ -1173,7 +1173,7 @@ static PyMethodDef ThriftFastBinaryMethods[] = {
 };
 
 PyMODINIT_FUNC
-initfastbinary(void) {
+init_parser(void) {
 #define INIT_INTERN_STRING(value) \
   do { \
     INTERN_STRING(value) = PyString_InternFromString(#value); \
@@ -1187,5 +1187,5 @@ initfastbinary(void) {
   PycString_IMPORT;
   if (PycStringIO == NULL) return;
 
-  (void) Py_InitModule("thrift.protocol.fastbinary", ThriftFastBinaryMethods);
+  (void) Py_InitModule("_parser", ThriftFastBinaryMethods);
 }
