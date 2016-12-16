@@ -14,17 +14,21 @@ typedef struct {
   unsigned keep_alive : 1;
 } request_state;
 
+
 typedef struct {
-  size_t sequence_id;
+  unsigned sequence_id;
   PyObject* api;
   PyObject* api_args;
   PyObject* api_result
-} call_data;
+  thrift_parser parser;
+} hydra_parser;
+
 
 typedef struct {
 #ifdef DEBUG
   unsigned long id;
 #endif
+  hydra_parser parser;
   ev_io ev_watcher;
 
   ServerInfo* server_info;
@@ -32,7 +36,7 @@ typedef struct {
   PyObject* client_addr;
 
   request_state state;
-  call_data single_call;
+  thrift_data call_data;
 } Request;
 
 #define REQUEST_FROM_WATCHER(watcher) \

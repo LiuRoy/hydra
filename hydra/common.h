@@ -12,8 +12,6 @@
 #define TYPE_ERROR(what, expected, got) \
   TYPE_ERROR_INNER(what, expected, "(got '%.200s' object instead)", Py_TYPE(got)->tp_name)
 
-typedef struct { char* data; size_t len; } string;
-
 enum thrift_status { THRIFT_BAD_REQUEST = 1, THRIFT_SERVER_ERROR };
 
 #ifdef DEBUG

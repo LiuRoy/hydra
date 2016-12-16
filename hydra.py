@@ -25,6 +25,7 @@ class ThriftServer(object):
         self.handler = handler
 
     def bind_and_listen(self, host, port, reuse_port):
+        """绑定并监听端口"""
         if host.startswith("unix:@"):
             # Abstract UNIX socket: "unix:@foobar"
             self.sock = socket.socket(socket.AF_UNIX)
@@ -45,6 +46,7 @@ class ThriftServer(object):
         self.sock.listen(LISTEN_BACKLOG)
 
     def serve(self):
+        """启动服务"""
         try:
             _hydra.server_run(self.sock, self.service, self.handler)
         finally:
