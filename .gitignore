@@ -4,7 +4,6 @@
 *.d
 
 # Object files
-*.o
 *.ko
 *.obj
 *.elf
@@ -32,7 +31,6 @@
 
 # Executables
 *.exe
-*.out
 *.app
 *.i*86
 *.x86_64
@@ -52,11 +50,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 ### CMake template
-CMakeCache.txt
-CMakeFiles
 CMakeScripts
-Makefile
-cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
 ### Python template
@@ -111,7 +105,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 
 # Flask stuff:
