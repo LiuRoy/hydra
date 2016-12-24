@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.6)
+project(hydra)
+
+set(CMAKE_CXX_STANDARD 11)
+
+set(SOURCE_FILES hydra/parser.h hydra/parser.c)
+add_executable(hydra ${SOURCE_FILES})
+
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
