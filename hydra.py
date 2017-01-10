@@ -5,7 +5,6 @@
 import os
 import socket
 import _hydra
-import _parser
 
 LISTEN_BACKLOG = 1024
 

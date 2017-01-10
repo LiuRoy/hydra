@@ -1,5 +1,5 @@
-#ifndef __common_h__
-#define __common_h__
+#ifndef HYDRA_COMMON_H
+#define HYDRA_COMMON_H
 
 #include <Python.h>
 #include <stdlib.h>
@@ -12,10 +12,8 @@
 #define TYPE_ERROR(what, expected, got) \
   TYPE_ERROR_INNER(what, expected, "(got '%.200s' object instead)", Py_TYPE(got)->tp_name)
 
-enum thrift_status { THRIFT_BAD_REQUEST = 1, THRIFT_SERVER_ERROR };
-
 #ifdef DEBUG
-  #define DBG_REQ(request, ...) \
+#define DBG_REQ(request, ...) \
     do { \
       printf("[DEBUG Req %ld] ", request->id); \
       DBG(__VA_ARGS__); \
@@ -26,8 +24,8 @@ enum thrift_status { THRIFT_BAD_REQUEST = 1, THRIFT_SERVER_ERROR };
       printf("\n"); \
     } while(0)
 #else
-  #define DBG(...) do{}while(0)
-  #define DBG_REQ(...) DBG(__VA_ARGS__)
+#define DBG(...) do{}while(0)
+#define DBG_REQ(...) DBG(__VA_ARGS__)
 #endif
 
 #define DBG_REFCOUNT(obj) \
@@ -37,8 +35,8 @@ enum thrift_status { THRIFT_BAD_REQUEST = 1, THRIFT_SERVER_ERROR };
   DBG_REQ(request, #obj "->ob_refcnt: %d", obj->ob_refcnt)
 
 #ifdef WITHOUT_ASSERTS
-  #undef assert
+#undef assert
   #define assert(...) do{}while(0)
 #endif
 
-#endif
+#endif //HYDRA_COMMON_H

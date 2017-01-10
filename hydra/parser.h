@@ -1,5 +1,5 @@
-#ifndef HELLO_PARSER_H
-#define HELLO_PARSER_H
+#ifndef HYDRA_PARSER_H
+#define HYDRA_PARSER_H
 
 #include <Python.h>
 
@@ -26,4 +26,4 @@ typedef struct {
 
 unsigned binary_decode(thrift_parser* parser, char* buffer, unsigned size);
 
-#endif //HELLO_PARSER_H
+#endif //HYDRA_PARSER_H
