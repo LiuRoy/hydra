@@ -4,6 +4,7 @@
 #include <ev.h>
 #include "common.h"
 #include "server.h"
+#include "parser.h"
 
 
 typedef struct {
@@ -16,10 +17,10 @@ typedef struct {
 
 
 typedef struct {
-    unsigned sequence_id;
-    PyObject* api;
-    PyObject* api_args;
-    PyObject* api_result;
+    unsigned sequence_id;        // thrift协议序列号
+    PyObject* method_name;       // 调用方法名称
+    PyObject* method_args;       // 方法参数
+    PyObject* method_result;     // 返回结果
     thrift_parser parser;
 } hydra_parser;
 
@@ -33,10 +34,9 @@ typedef struct {
 
     ServerInfo* server_info;
     int client_fd;
-    PyObject* client_addr;
+    PyObject* client_address;
 
     request_state state;
-    thrift_data call_data;
 } Request;
 
 #define REQUEST_FROM_WATCHER(watcher) \

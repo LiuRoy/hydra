@@ -136,38 +136,30 @@ ev_io_on_read(struct ev_loop* mainloop, ev_io* watcher, const int events)
         /* Client disconnected */
         read_state = aborted;
         DBG_REQ(request, "Client disconnected");
-    } else if (read_bytes < 0) {
+    }
+    else if (read_bytes < 0) {
         /* Would block or error */
         if(errno == EAGAIN || errno == EWOULDBLOCK) {
             read_state = not_yet_done;
-        } else {
+        }
+        else {
             read_state = aborted;
             DBG_REQ(request, "Hit errno %d while reading", errno);
         }
-    } else {
+    }
+    else {
         /* OK, either expect more data or done reading */
         Request_decode(request, read_buf, (size_t)read_bytes);
         if(request->state.error_code) {
             read_state = done;
             DBG_REQ(request, "encode error");
-//todo 生成一个encode error异常返回给客户端
-//      request->current_chunk = PyString_FromString(
-//        http_error_messages[request->state.error_code]);
-//      assert(request->iterator == NULL);
-        } else if(request->state.parse_finished) {
+            // todo 根据错误码生成报错
+        }
+        else if(request->state.parse_finished) {
             read_state = done;
-//todo 调用thrift_call_application, 判断是否发生异常并写入结果
-//      bool call_ok = thrift_call_application(request);
-//      if (!call_ok) {
-//        DBG_REQ(request, "thrift app error");
-//        assert(PyErr_Occurred());
-//        PyErr_Print();
-//        assert(!request->state.chunked_response);
-//        Py_XCLEAR(request->iterator);
-//        request->current_chunk = PyString_FromString(
-//          http_error_messages[HTTP_SERVER_ERROR]);
-//      }
-        } else {
+            // todo 调用dispatcher中对应的方法
+        }
+        else {
             /* Wait for more data */
             read_state = not_yet_done;
         }
@@ -194,59 +186,23 @@ ev_io_on_read(struct ev_loop* mainloop, ev_io* watcher, const int events)
 static void
 ev_io_on_write(struct ev_loop* mainloop, ev_io* watcher, const int events)
 {
-//  static char write_buf[BUFFER_SIZE];
     Request* request = REQUEST_FROM_WATCHER(watcher);
     DBG_REQ(request, "ev_io_on_write called");
-//
-//  write_state write_state;
-//  ssize_t bytes_sent = write(
-//    request->client_fd,
-//    read_buf,
-//    BUFFER_SIZE
-//  );
-//
-//  GIL_LOCK(0);
-//
-//  if (bytes_sent == 0) {
-//    /* Client disconnected */
-//    write_state = aborted;
-//    DBG_REQ(request, "Client disconnected");
-//  } else if (bytes_sent < 0) {
-//    /* Would block or error */
-//    if(errno == EAGAIN || errno == EWOULDBLOCK) {
-//      write_state = not_yet_done;
-//    } else {
-//      write_state = aborted;
-//      DBG_REQ(request, "Hit errno %d while writing", errno);
-//    }
-//  } else {
-//    Request_encode(request, read_buf, (size_t)read_bytes);
-//    if(request->state.encode_error) {
-//      write_state = aborted;
-//      DBG_REQ(request, "encode error");
-//    } else if(request->state.encode_finished) {
-//      write_state = done;
-//    } else {
-//      /* Wait for more data */
-//      write_state = not_yet_done;
-//    }
-//  }
-//
-//  switch(write_state) {
-//  case not_yet_done:
-//    break;
-//  case done:
-//    DBG_REQ(request, "done, close");
-//    close_connection(mainloop, request);
-//    break;
-//  case aborted:
-//    /* Response was aborted due to an error. We can't do anything graceful here
-//     * because at least one chunk is already sent... just close the connection. */
-//    close_connection(mainloop, request);
-//    break;
-//  }
-//
-//  GIL_UNLOCK(0);
+}
+
+static bool
+handle_nonzero_errno(Request* request)
+{
+    if(errno == EAGAIN || errno == EWOULDBLOCK) {
+        /* Try again later */
+        return true;
+    }
+    else {
+        /* Serious transmission failure. Hang up. */
+        fprintf(stderr, "Client %d hit errno %d\n", request->client_fd, errno);
+        request->state.keep_alive = false;
+        return false;
+    }
 }
 
 static void
