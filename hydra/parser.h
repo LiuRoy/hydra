@@ -5,18 +5,18 @@
 
 typedef struct buffer_node {
     char* data;
-    unsigned size;
+    size_t size;
     struct buffer_node* next;
 } buffer_node;
 
 typedef struct {
     buffer_node* head;
     buffer_node* tail;
-    unsigned int buffer_sum;
+    size_t buffer_sum;
 
     void* data;
 } thrift_parser;
 
-unsigned binary_decode(thrift_parser* parser, char* buffer, unsigned size);
+void binary_decode(thrift_parser* parser, const char* buffer, const size_t size);
 
 #endif //HYDRA_PARSER_H

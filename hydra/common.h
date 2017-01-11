@@ -39,4 +39,11 @@
   #define assert(...) do{}while(0)
 #endif
 
+enum thrift_error {
+    BAD_VERSION = 0;
+    HTTP_BAD_REQUEST,
+    HTTP_LENGTH_REQUIRED,
+    HTTP_SERVER_ERROR
+};
+
 #endif //HYDRA_COMMON_H
