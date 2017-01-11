@@ -218,7 +218,7 @@ static bool read_message_begin(buffer_info* bf_info, bool strict) {
         }
 
         int32_t name_sz = read_i32(bf_info);
-        char* name = read_bytes(bf_info, (unsigned)name_sz);
+        char* name = read_bytes(bf_info, (size_t)name_sz);
         request->method_name = PyString_FromStringAndSize(name, name_sz);
     }
     else {
@@ -226,12 +226,44 @@ static bool read_message_begin(buffer_info* bf_info, bool strict) {
             request->state.error_code = BAD_VERSION;
             return false;
         }
-        char* name = read_bytes(bf_info, (unsigned)sz);
+        char* name = read_bytes(bf_info, (size_t)sz);
+        read_i8(bf_info);
         request->method_name = PyString_FromStringAndSize(name, sz);
     }
 
     request->sequence_id = (unsigned)read_i32(bf_info);
     return true;
+}
+
+static void skip(buffer_info* bf_info, TType field_type) {
+    switch (field_type) {
+        case T_BOOL:
+        case T_BYTE: {
+            read_i8(bf_info);
+            break;
+        }
+        case T_I16: {
+            read_i16(bf_info);
+            break;
+        }
+        case T_I32: {
+            read_i32(bf_info);
+            break;
+        }
+        case T_I64: {
+            read_i64(bf_info);
+            break;
+        }
+        case T_DOUBLE: {
+            read_double(bf_info);
+            break;
+        }
+        case T_STRING: {
+            size_t str_len = (size_t)read_i32(bf_info);
+            read_bytes(bf_info, str_len);
+        }
+
+    }
 }
 
 void binary_decode(thrift_parser* parser,
